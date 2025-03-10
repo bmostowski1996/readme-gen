@@ -1,9 +1,8 @@
-// TODO: Include packages needed for this application
+// Include packages needed for this application
 import inquirer from 'inquirer';
 import fs from 'fs';
-import { text } from 'stream/consumers';
 
-// TODO: Create an array of questions for user input
+// Create an array of questions for user input
 const questions = [
     'What is the title of your project?',
     'Enter a description of your project:',
@@ -19,7 +18,7 @@ const licenses = [
     'Creative Commons Attribution 4.0'
 ]
 
-// TODO: Create a function to write README file
+// Create a function to write README file
 function writeToFile(fileName, data) {
     let textString = '';
 
@@ -32,7 +31,7 @@ function writeToFile(fileName, data) {
     fs.writeFileSync(fileName, textString, 'utf8');
 }
 
-// TODO: Create a function to initialize app
+// Create a function to initialize app
 async function init() {
 
     // This is an array, where each element contains the complete text for a given section
@@ -121,7 +120,7 @@ async function init() {
     ]);
 
     sectionText = '## Questions \n';
-    sectionText += 'This repository was created by ' + userInfo.username + '\n';
+    sectionText += 'This repository was created by ' + userInfo.username + '.\n';
     sectionText += 'They can be contacted at ' + userInfo.email;
     projectSections.push(sectionText);
 
@@ -137,8 +136,8 @@ async function init() {
     projectSections.splice(1,0,sectionText);
 
     console.log(projectSections);
-    writeToFile('README.md', projectSections);
-}
+    writeToFile('README-example.md', projectSections);
+};
 
 // Function call to initialize app
 init();

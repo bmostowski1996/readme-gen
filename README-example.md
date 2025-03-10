@@ -11,23 +11,23 @@
 - [Questions](#questions)
 
 ## License 
-This project is licensed using MIT
+This project is licensed using GNU General Public License v3.0
 
 ## Project Description 
-F
+This is a project
 
 ## Installation Instructions 
-F
+Install the project
 
 ## Usage 
-F
+This is how you use the project
 
 ## Contribution Guidelines 
-F
+Make your contributions clear and concise!
 
 ## Testing Instructions 
-F
+Test it out!
 
 ## Questions 
-This repository was created by bmostowski1996
+This repository was created by bmostowski1996.
 They can be contacted at bmostowski1996@gmail.com
