@@ -1,6 +1,7 @@
 // TODO: Include packages needed for this application
 import inquirer from 'inquirer';
 import fs from 'fs';
+import { text } from 'stream/consumers';
 
 // TODO: Create an array of questions for user input
 const questions = [
@@ -20,16 +21,34 @@ const licenses = [
 
 // TODO: Create a function to write README file
 function writeToFile(fileName, data) {
-    fs.writeFileSync(fileName, data, 'utf8');
+    let textString = '';
+
+    for (let i = 0; i < data.length; i++) {
+        textString += data[i]
+        if (i < data.length - 1) {
+            textString += '\n\n';
+        }
+    }
+    fs.writeFileSync(fileName, textString, 'utf8');
 }
 
 // TODO: Create a function to initialize app
 async function init() {
 
-    // Iterate through all the questions presented in questions
-    let projectData = '';
+    // This is an array, where each element contains the complete text for a given section
+    const projectSections = [];
+
+    // We are going to lay out the sections like so:
+    // Title
+    // License
+    // Table of Contents
+    // ...
+
+    // Note that we won't necessarily be prompting the user for this information in this order, so pay attention!
 
     for (let i = 0; i < questions.length; i++) {
+        let sectionText = '';
+
         const response = await inquirer.prompt([
             {
                 type: 'input',
@@ -41,36 +60,36 @@ async function init() {
         switch(i) {
             case 0:
                 // Add project title
-                projectData = projectData + '# ' + response.text + '\n\n';
+                sectionText = '# ' + response.text;
                 break;
             
             case 1: 
                 // Add project Description
-                projectData = projectData + '# Project Description \n' + response.text + '\n\n';
+                sectionText = '## Project Description \n' + response.text;
                 break;
             
             case 2: 
                 // Add installation instructions
-                projectData = projectData + '# Installation Instructions \n' + response.text + '\n\n';
+                sectionText = '## Installation Instructions \n' + response.text;
                 break;
 
             case 3:
                 // Add Project usage info
-                projectData = projectData + '# Usage \n' + response.text + '\n\n';
+                sectionText = '## Usage \n' + response.text;
                 break;
             
             case 4: 
                 // Add Project usage info
-                projectData = projectData + '# Contribution Guidelines \n' + response.text + '\n\n';
+                sectionText = '## Contribution Guidelines \n' + response.text;
                 break;
 
             case 5:
                 // Testing instructions
-                projectData = projectData + '# Testing Instructions \n' + response.text + '\n\n';
+                sectionText = '## Testing Instructions \n' + response.text;
                 break;
-
-
         }
+
+        projectSections.push(sectionText);
     }
 
     // Next, let's have the user choose a license for the project
@@ -83,13 +102,42 @@ async function init() {
         }
     ])
 
-    projectData += '# License \n';
-    projectData += 'This project is licensed using ' + response.text + '\n\n';
+    let sectionText = '## License \n';
+    sectionText += 'This project is licensed using ' + response.text;
+    projectSections.splice(1,0,sectionText);
 
-    console.log(projectData);
-    
+    // Now, let's prompt the user for their Github username and an email they can be contacted at
+    const userInfo = await inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is your Github username?',
+            name: 'username'
+        },
+        {
+            type: 'input',
+            message: 'What is your email address?',
+            name: 'email'
+        }
+    ]);
 
-    writeToFile('README.md', projectData);
+    sectionText = '## Questions \n';
+    sectionText += 'This repository was created by ' + userInfo.username + '\n';
+    sectionText += 'They can be contacted at ' + userInfo.email;
+    projectSections.push(sectionText);
+
+    // When all of our information is present, we are going to conclude by adding a section for table of contents
+    sectionText = '## Table of Contents \n\n';
+    sectionText += '- [License](#license)\n';
+    sectionText += '- [Project Description](#Project-Description)\n';
+    sectionText += '- [Installation](#Installation-Instructions)\n'
+    sectionText += '- [Usage](#usage)\n';
+    sectionText += '- [Contribution Guidelines](#contribution-guidelines)\n';
+    sectionText += '- [Testing Instructions](#testing-instructions)\n';
+    sectionText += '- [Questions](#questions)';
+    projectSections.splice(1,0,sectionText);
+
+    console.log(projectSections);
+    writeToFile('README.md', projectSections);
 }
 
 // Function call to initialize app
